@@ -182,7 +182,7 @@ if torch.cuda.is_available() and not opt.gpus:
 if opt.gpus:
     if cuda_visible_devices is not None:
       gpu_0th = cuda_visible_device_list[0]
-      cuda.set_device(gpu_0th)
+      cuda.set_device(int(gpu_0th))
     else:
       cuda.set_device(opt.gpus[0])
     if opt.seed > 0:
