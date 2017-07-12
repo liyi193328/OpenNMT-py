@@ -168,8 +168,7 @@ cuda_visible_devices = os.getenv("CUDA_VISIBLE_DEVICES")
 print("cuda_visible_devices: {}".format(cuda_visible_devices))
 if cuda_visible_devices is not None:
   cuda_visible_device_list = cuda_visible_devices.split(",")
-  print(cuda_visible_device_list)
-  opt.gpus = [cuda_visible_device_list[opt.gpus[v]] for v in opt.gpus]
+  opt.gpus = [int(cuda_visible_device_list[i]) for i in range(len(opt.gpus))]
 
 print(opt)
 
