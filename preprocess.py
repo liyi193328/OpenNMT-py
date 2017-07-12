@@ -73,7 +73,7 @@ def makeVocabulary(filename, size):
                       lower=opt.lower)
     featuresVocabs = []
     with codecs.open(filename, "r", "utf-8") as f:
-        for sent in f.readlines():
+        for sent in f:
             words, features, numFeatures \
                 = onmt.IO.extractFeatures(sent.split())
 
