@@ -180,11 +180,7 @@ if torch.cuda.is_available() and not opt.gpus:
     print("WARNING: You have a CUDA device, should run with -gpus 0")
 
 if opt.gpus:
-    if cuda_visible_devices is not None:
-      gpu_0th = cuda_visible_device_list[0]
-      cuda.set_device(int(gpu_0th))
-    else:
-      cuda.set_device(opt.gpus[0])
+    cuda.set_device(opt.gpus[0])
     if opt.seed > 0:
         torch.cuda.manual_seed(opt.seed)
 
