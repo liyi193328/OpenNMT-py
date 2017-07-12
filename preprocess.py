@@ -6,6 +6,7 @@ import onmt.IO
 import argparse
 import torch
 import codecs
+import glob
 
 parser = argparse.ArgumentParser(description='preprocess.py')
 onmt.Markdown.add_md_help_argument(parser)
@@ -20,13 +21,13 @@ parser.add_argument('-src_img_dir', default=".",
                     help="Location of source images")
 
 
-parser.add_argument('-train_src', required=True,
-                    help="Path to the training source data")
-parser.add_argument('-train_tgt', required=True,
+parser.add_argument('-train_src', required=True,metavar="path", type=str,
+                    help="Path to the training source data,Path to files to be merged; enclose in quotes, accepts * as wildcard for directories or filenames")
+parser.add_argument('-train_tgt', required=True,metavar="path", type=str,
                     help="Path to the training target data")
-parser.add_argument('-valid_src', required=True,
+parser.add_argument('-valid_src', required=True,metavar="path", type=str,
                     help="Path to the validation source data")
-parser.add_argument('-valid_tgt', required=True,
+parser.add_argument('-valid_tgt', required=True,metavar="path", type=str,
                     help="Path to the validation target data")
 
 parser.add_argument('-save_data', required=True,
@@ -72,25 +73,27 @@ def makeVocabulary(filename, size):
                        onmt.Constants.BOS_WORD, onmt.Constants.EOS_WORD],
                       lower=opt.lower)
     featuresVocabs = []
-    with codecs.open(filename, "r", "utf-8") as f:
-        for sent in f:
-            words, features, numFeatures \
-                = onmt.IO.extractFeatures(sent.split())
+    path_list = glob.glob(filename)
+    for path_id, path in enumerate(path_list):
+      with codecs.open(path, "r", "utf-8") as f:
+          for sent in f:
+              words, features, numFeatures \
+                  = onmt.IO.extractFeatures(sent.split())
 
-            if len(featuresVocabs) == 0 and numFeatures > 0:
-                for j in range(numFeatures):
-                    featuresVocabs.append(onmt.Dict([onmt.Constants.PAD_WORD,
-                                                     onmt.Constants.UNK_WORD,
-                                                     onmt.Constants.BOS_WORD,
-                                                     onmt.Constants.EOS_WORD]))
-            else:
-                assert len(featuresVocabs) == numFeatures, \
-                    "all sentences must have the same number of features"
+              if len(featuresVocabs) == 0 and numFeatures > 0:
+                  for j in range(numFeatures):
+                      featuresVocabs.append(onmt.Dict([onmt.Constants.PAD_WORD,
+                                                       onmt.Constants.UNK_WORD,
+                                                       onmt.Constants.BOS_WORD,
+                                                       onmt.Constants.EOS_WORD]))
+              else:
+                  assert len(featuresVocabs) == numFeatures, \
+                      "all sentences must have the same number of features"
 
-            for i in range(len(words)):
-                vocab.add(words[i])
-                for j in range(numFeatures):
-                    featuresVocabs[j].add(features[j][i])
+              for i in range(len(words)):
+                  vocab.add(words[i])
+                  for j in range(numFeatures):
+                      featuresVocabs[j].add(features[j][i])
 
     originalSize = vocab.size()
     vocab = vocab.prune(size)

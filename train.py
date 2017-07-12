@@ -1,5 +1,6 @@
 from __future__ import division
 
+import os
 import onmt
 import onmt.Markdown
 import onmt.Models
@@ -162,6 +163,10 @@ parser.add_argument('-seed', type=int, default=-1,
                     reproducibility.""")
 
 opt = parser.parse_args()
+
+cuda_visible_devices = os.getenv("CUDA_VISIBLE_DEVICES")
+cuda_visible_device_list = cuda_visible_devices.split(",")
+opt.gpus = [cuda_visible_device_list[opt[v]] for v in opt.gpus]
 
 print(opt)
 
