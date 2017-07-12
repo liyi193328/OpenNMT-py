@@ -166,9 +166,10 @@ opt = parser.parse_args()
 
 cuda_visible_devices = os.getenv("CUDA_VISIBLE_DEVICES")
 print("cuda_visible_devices: {}".format(cuda_visible_devices))
-if cuda_visible_devices is not None:
-  cuda_visible_device_list = cuda_visible_devices.split(",")
-  opt.gpus = [int(cuda_visible_device_list[i]) for i in range(len(opt.gpus))]
+
+# if cuda_visible_devices is not None:
+#   cuda_visible_device_list = cuda_visible_devices.split(",")
+#   opt.gpus = [int(cuda_visible_device_list[i]) for i in range(len(opt.gpus))]
 
 print(opt)
 
@@ -179,7 +180,7 @@ if torch.cuda.is_available() and not opt.gpus:
     print("WARNING: You have a CUDA device, should run with -gpus 0")
 
 if opt.gpus:
-    cuda.set_device(opt.gpus[0])
+    # cuda.set_device(opt.gpus[0])
     if opt.seed > 0:
         torch.cuda.manual_seed(opt.seed)
 
